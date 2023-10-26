@@ -72,7 +72,7 @@ app.post('/api/registro', async (req, res) => {
 });
 
 // Rota para criar um currículo
-app.post('/api/curriculo', async (req, res) => {
+app.post('/api/curriculo', AuthMiddleware,async (req, res) => {
   const { nome, experiencias, educacao } = req.body;
 
   try {
@@ -87,7 +87,7 @@ app.post('/api/curriculo', async (req, res) => {
 });
 
 // Rota para atualizar um currículo
-app.put('/api/curriculo/:id', async (req, res) => {
+app.put('/api/curriculo/:id', AuthMiddleware,async (req, res) => {
   const id = req.params.id;
   const { nome, experiencias, educacao } = req.body;
 
@@ -103,7 +103,7 @@ app.put('/api/curriculo/:id', async (req, res) => {
 });
 
 // Rota para obter todos os currículos
-app.get('/api/curriculo', async (req, res) => {
+app.get('/api/curriculo', AuthMiddleware,async (req, res) => {
   try {
     const query = 'SELECT * FROM curriculo';
     const result = await db.query(query);
@@ -114,7 +114,7 @@ app.get('/api/curriculo', async (req, res) => {
   }
 });
 // Rota para excluir um currículo
-app.delete('/api/curriculo/:id', async (req, res) => {
+app.delete('/api/curriculo/:id', AuthMiddleware,async (req, res) => {
   const id = req.params.id;
 
   try {
