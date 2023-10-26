@@ -2,8 +2,74 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
+const { initializeApp } = require("@firebase/app");
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithCustomToken, signOut  } = require("firebase/auth");
+const firebaseJson = require('./firebase.json');
+const auth = getAuth(initializeApp(firebaseJson));
+var admin = require("firebase-admin");
+var serviceAccount = require("./firebaseAdmin.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 
-const db = require('./db/db'); 
+const AuthMiddleware = async (req, res, next) => {
+  const token = req.headers['authorization'].replace('Bearer ', '');
+  if (!token) {
+      return res.status(401).json({ message: 'Acesso não autorizado' });
+  }
+
+  try {
+      const authUser = await admin.auth().verifyIdToken(token);
+      req.authUser = authUser;
+      next();
+
+  } catch (e) {
+      return res.sendStatus(401);
+      
+  }
+};
+
+const db = require('./db/db');
+
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Autentica o usuário com o email e a senha
+    const user = await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      // O usuário foi autenticado com sucesso
+      const user = userCredential.user;
+
+      return user;
+
+    });
+
+    return res.status(200).json({ message: "Autenticação bem-sucedida", user });
+
+  } catch (error) {
+    return res.status(401).json({ error: "Credenciais inválidas" });
+  }
+});
+
+app.post('/api/registro', async (req, res) => {
+  const { email, password } = req.body;
+
+  await createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    console.log('user criado');
+
+  })
+  .catch((error) => {
+    errorMessage = true;
+
+  });
+
+  if(errorMessage == true) {
+    return res.status(500).json({ error: "usuario já existe" });
+  }
+
+  return res.status(201).json({ message: "Usuário registrado com sucesso"});
+});
 
 // Rota para criar um currículo
 app.post('/api/curriculo', async (req, res) => {
