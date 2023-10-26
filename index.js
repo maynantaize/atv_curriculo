@@ -13,12 +13,13 @@ admin.initializeApp({
 });
 
 const AuthMiddleware = async (req, res, next) => {
+  try {
   const token = req.headers['authorization'].replace('Bearer ', '');
   if (!token) {
       return res.status(401).json({ message: 'Acesso não autorizado' });
   }
 
-  try {
+  
       const authUser = await admin.auth().verifyIdToken(token);
       req.authUser = authUser;
       next();
