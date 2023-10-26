@@ -35,7 +35,7 @@ const db = require('./db/db');
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
-  try {
+  // try {
     // Autentica o usuário com o email e a senha
     const user = await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
       // O usuário foi autenticado com sucesso
@@ -47,9 +47,9 @@ app.post('/api/login', async (req, res) => {
 
     return res.status(200).json({ message: "Autenticação bem-sucedida", user });
 
-  } catch (error) {
-    return res.status(401).json({ error: "Credenciais inválidas" });
-  }
+  // } catch (error) {
+  //   return res.status(401).json({ error: "Credenciais inválidas" });
+  // }
 });
 
 app.post('/api/registro', async (req, res) => {
