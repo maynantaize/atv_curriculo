@@ -13,12 +13,14 @@ admin.initializeApp({
 });
 
 const AuthMiddleware = async (req, res, next) => {
-  try {
-  const token = req.headers['authorization'].replace('Bearer ', '');
+  
+  const token = req.headers['authorization'] ? req.headers['authorization'].replace('Bearer ', '') : null;
+
   if (!token) {
       return res.status(401).json({ message: 'Acesso não autorizado' });
   }
 
+  try {
   
       const authUser = await admin.auth().verifyIdToken(token);
       req.authUser = authUser;
@@ -37,7 +39,7 @@ app.post('/api/login', async (req, res) => {
 
   // try {
     // Autentica o usuário com o email e a senha
-    const user = await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+    const user = await signInWithEmailAndPassword(autuserCredentialh, email, password).then(() => {
       // O usuário foi autenticado com sucesso
       const user = userCredential.user;
 
