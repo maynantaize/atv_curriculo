@@ -39,7 +39,7 @@ app.post('/api/login', async (req, res) => {
 
   // try {
     // Autentica o usuário com o email e a senha
-    const user = await signInWithEmailAndPassword(auth, email, password).then(() => {
+    const user = await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
       // O usuário foi autenticado com sucesso
       const user = userCredential.user;
 
