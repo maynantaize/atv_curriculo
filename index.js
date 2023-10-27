@@ -56,22 +56,21 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/registro', async (req, res) => {
   const { email, password } = req.body;
+  let errorMessage = false; // Declara a variável errorMessage
 
   await createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    console.log('user criado');
+    .then((userCredential) => {
+      console.log('Usuário criado');
+    })
+    .catch((error) => {
+      errorMessage = true;
+    });
 
-  })
-  .catch((error) => {
-    errorMessage = true;
-
-  });
-
-  if(errorMessage == true) {
-    return res.status(500).json({ error: "usuario já existe" });
+  if (errorMessage) {
+    return res.status(500).json({ error: "Usuário já existe" });
   }
 
-  return res.status(201).json({ message: "Usuário registrado com sucesso"});
+  return res.status(201).json({ message: "Usuário registrado com sucesso" });
 });
 
 // Rota para criar um currículo
